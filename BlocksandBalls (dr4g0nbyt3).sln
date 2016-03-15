@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksandBalls (dr4g0nbyt3).CSharp", "BlocksandBalls (dr4g0nbyt3).CSharp.csproj", "{D4DC3337-5FEE-EA71-8D2B-BB0AF0E57F72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksandBalls (dr4g0nbyt3).CSharp.Editor", "BlocksandBalls (dr4g0nbyt3).CSharp.Editor.csproj", "{509EE8BD-450A-2109-37D7-1700FB7B27D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{D4DC3337-5FEE-EA71-8D2B-BB0AF0E57F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4DC3337-5FEE-EA71-8D2B-BB0AF0E57F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4DC3337-5FEE-EA71-8D2B-BB0AF0E57F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{509EE8BD-450A-2109-37D7-1700FB7B27D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509EE8BD-450A-2109-37D7-1700FB7B27D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509EE8BD-450A-2109-37D7-1700FB7B27D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509EE8BD-450A-2109-37D7-1700FB7B27D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
