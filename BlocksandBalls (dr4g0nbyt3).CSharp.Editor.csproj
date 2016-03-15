@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{509EE8BD-450A-2109-37D7-1700FB7B27D0}</ProjectGuid>
+    <ProjectGuid>{B4587BB4-7D70-0A2E-C260-6A274BA44B49}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -54,9 +54,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
     </Reference>
@@ -71,9 +68,6 @@
     </Reference>
     <Reference Include="UnityEditor.Networking">
       <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Analytics">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Graphs">
       <HintPath>Library\UnityAssemblies\UnityEditor.Graphs.dll</HintPath>
@@ -119,9 +113,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="BlocksandBalls (dr4g0nbyt3).CSharp.csproj">
-      <Project>{D4DC3337-5FEE-EA71-8D2B-BB0AF0E57F72}</Project>
-      <Name>BlocksandBalls (dr4g0nbyt3).CSharp</Name>
+    <ProjectReference Include="blocksAndBalls (dr4g0nbyt3).CSharp.csproj">
+      <Project>{FE72F843-26D0-8818-0D0B-5C580A2041DA}</Project>
+      <Name>blocksAndBalls (dr4g0nbyt3).CSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

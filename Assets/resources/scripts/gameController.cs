@@ -1,6 +1,10 @@
 ﻿// Developers: Dr4g0nbyt3
 // Date: December 1st, 2015
+// Github: dr4g0nbyt3
+// Website: dr4g0nbyt3.github.io
 // Email: dr4g0nbyt3@gmail.com
+// Twitter: @dr4g0nbyt3
+// Youtube: dr4g0nbyt3
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +33,7 @@ public class gameController : MonoBehaviour
     // Public Variables
     public bool isSelectingPrimary;
     public bool isSelectingSecondary;
+    public bool hasNewUnlocks;
     public float fadeDuration = 1.0f;
     public float fadEnd;
     public float timer;
@@ -45,6 +50,7 @@ public class gameController : MonoBehaviour
     public int ballsLeft;
     public int blockSpeed;
     public int ballSpeed;
+    public int unblockablesPage;
     public string primaryColor = "white";
     public string secondaryColor = "black";
     public string skin = "customLight";
@@ -60,6 +66,7 @@ public class gameController : MonoBehaviour
 
     // Clear this 
     private List<List<GameObject>> blockLanes = new List<List<GameObject>> { new List<GameObject>(), new List<GameObject>() };
+    private List<GameObject> balls = new List<GameObject>();
 
     // Do not clear these
     private static List<string> spriteGroups = new List<string> { "balls", "blocks", "dr4g0nbyt3" };
@@ -77,7 +84,7 @@ public class gameController : MonoBehaviour
         Load();
         SceneController();
         ballsLeft = 3;
-
+        unblockablesPage = 1; 
     }
 
     void FixedUpdate()
@@ -87,7 +94,6 @@ public class gameController : MonoBehaviour
 
     void Update()
     {
-        
 
     }
 
@@ -99,6 +105,8 @@ public class gameController : MonoBehaviour
         GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(rx, ry, 1));
         GUI.skin = guiSkin;
 
+        // Scene styling
+        // Gui for dr4g0nbyt3 intro scene
         if (Application.loadedLevelName == "dr4g0nbyt3Intro")
         {
             if (sprites[0].Count != 0)
@@ -110,28 +118,36 @@ public class gameController : MonoBehaviour
 
             }
         }
+
+        // Gui for pantlessgrandpa scene.
         else if (Application.loadedLevelName == "pantlessGrandpaIntro")
         {
             if (sprites[0].Count != 0)
             {
                 Texture tex = (Texture2D)Resources.Load("sprites/p4ntsl3ssgr4ndp4/icon");
                 GUI.Box(new Rect(225, 575, 450, 450), tex, "box");
-                GUI.Label(new Rect(0, 900, 900, 256), "PANTLESS");
-                GUI.Label(new Rect(0, 1000, 900, 256), "GRANDPA");
+                GUI.Label(new Rect(0, 900, 900, 256), "P4NTL3SS");
+                GUI.Label(new Rect(0, 1000, 900, 256), "GR4NDP4");
             }
         }
+
+        // Gui for game scene.
         else if (Application.loadedLevelName == "game")
         {
-            GUI.Label(new Rect(0, 900, 900, 256), ballsLeft.ToString());
-            GUI.Label(new Rect(0, 700, 900, 256), score.ToString());
+            GUI.Label(new Rect(0, 800, 450, 128), ballsLeft.ToString());
+            GUI.Label(new Rect(450, 800, 450, 128), score.ToString());
             
         }
+
+        // Gui for main menu scene.
         else if (Application.loadedLevelName == "menu")
         {
 
             // Main Menu Logo
             guiSkin.label.fontSize = 128;
             guiSkin.label.fontStyle = FontStyle.Bold;
+            // Change color of font on main menu
+            //guiSkin.label.normal.textColor
             GUI.Label(new Rect(0, 64, 900, 256), "BLOCKS");
             guiSkin.label.fontSize = 72;
             GUI.Label(new Rect(0,288,900,256 ), "AND");
@@ -150,8 +166,16 @@ public class gameController : MonoBehaviour
             if (GUI.Button(new Rect(150, 960, 600, 128), ""))
             {
                 LoadOptionsScene();
+                LoadUnblockablesScene();
             }
-            GUI.Label(new Rect(0, 960, 900, 128), "UNBLOCKABLES");
+            if (hasNewUnlocks)
+            {
+                GUI.Label(new Rect(0, 960, 900, 128), "!UNBLOCKABLES!");
+            }
+            else
+            {
+                GUI.Label(new Rect(0, 960, 900, 128), "UNBLOCKABLES");
+            }
             if (GUI.Button(new Rect(150, 1120, 600, 128), ""))
             {
                 LoadOptionsScene();
@@ -168,77 +192,214 @@ public class gameController : MonoBehaviour
             }
             GUI.Label(new Rect(0, 1440, 900, 128), "QUIT");
         }
-        else if (Application.loadedLevelName == "options")
+
+        // Gui for unblockables scene.
+        else if (Application.loadedLevelName == "unblockables")
         {
-            GUI.Box(new Rect(0, 0, 900, 256), "UNBLOCKABLES", "unblockablesHeader");
-            if (GUI.Button(new Rect(32, 60, 128, 128), "", "backButton"))
+            
+            // Unblockable header formatting.
+            GUI.Box(new Rect(0, 0, 900, 192), "UNBLOCKABLES", "unblockablesHeader");
+            if (GUI.Button(new Rect(0, 32, 128, 128), "", "backButton"))
             {
                 isSelectingPrimary = false;
                 isSelectingSecondary = false;
                 Save();
                 LoadMenuScene();
             }
-            if (GUI.Button(new Rect(180, 210, 180, 180), "MAIN", "unblockablesHeader"))
+            if (GUI.Button(new Rect(0, 192, 450, 128), "", "unblockableSection0"))
             {
                 isSelectingPrimary = true;
                 isSelectingSecondary = false;
             }
-            if (GUI.Button(new Rect(540, 210, 180, 180), "BOOM", "unblockablesHeader"))
+            GUI.Label(new Rect(0, 192, 450, 128), "MAIN", "unblockableSection0");
+            if (GUI.Button(new Rect(450, 192, 450, 128), "", "unblockableSection0"))
             {
                 isSelectingSecondary = true;
                 isSelectingPrimary = false;
             }
-            GUI.Box(new Rect(100, 332, 700, 256), "YELLOW", "unblockablesHeader");
-            if (GUI.Button(new Rect(100, 500, 700, 256), "", "unblockableSection1"))
+            GUI.Label(new Rect(450, 192, 450, 128), "BOOM", "unblockableSection0");
+
+            GUI.Label(new Rect(0, 200, 900, 128), unblockablesPage.ToString(), "label");
+
+            if (GUI.Button(new Rect(0, 800, 128, 128), "", "backButton"))
             {
-                if (isSelectingPrimary)
-                {
-                    primaryColor = "yellow";
-                    Debug.Log("Primary Color should be yellow now.");
-                }
-                if (isSelectingSecondary)
-                {
-                    secondaryColor = "yellow";
-                    Debug.Log("Secondary Color should be yellow now.");
-                }
-                Save();
+                unblockablesPage--;
             }
-            GUI.Box(new Rect(100, 732, 700, 256), "ORANGE", "unblockablesHeader");
-            if (GUI.Button(new Rect(100, 900, 700, 256), "", "unblockableSection1"))
+            if (GUI.Button(new Rect(800, 800, 128, 128), "", "backButton"))
             {
-                if (isSelectingPrimary)
-                {
-                    primaryColor = "orange";
-                    Debug.Log("Primary Color should be orange now");
-                }
-                else if (isSelectingSecondary)
-                {
-                    secondaryColor = "orange";
-                    Debug.Log("Secondary Color should be orange now");
-                }
-                Save();
-            }
-            GUI.Box(new Rect(100, 1132, 700, 256), "RED", "unblockablesHeader");
-            if (GUI.Button(new Rect(100, 1300, 700, 256), "", "unblockableSection1"))
-            {
-                if (isSelectingPrimary)
-                {
-                    primaryColor = "red";
-                    Debug.Log("Primary Color should be red now");
-                }
-                else if (isSelectingSecondary)
-                {
-                    secondaryColor = "red";
-                    Debug.Log("Secondary Color should be red now");
-                }
-                else if (!isSelectingPrimary && !isSelectingSecondary) {
-                    Debug.Log("Abort missions both negative should be happening if no choice selected for main or secondary");
-                }
-                
-                Save();
+                unblockablesPage++;
             }
 
-        }
+            // Selections for page 0.
+            if (unblockablesPage == 0)
+            {
+                // Place hackers theme here.
+            }
+
+            // Selections for page 1.
+            if (unblockablesPage == 1)
+            {
+
+                // Unblock selection for Yellow.
+                if (GUI.Button(new Rect(100, 458, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "yellow";
+                        Debug.Log("Primary Color should be yellow now.");
+                    }
+                    if (isSelectingSecondary)
+                    {
+                        secondaryColor = "yellow";
+                        Debug.Log("Secondary Color should be yellow now.");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 330, 700, 128), "YELLOW", "unblockablesHeader");
+                Texture tmpTex = (Texture2D)Resources.Load("sprites/blocks/yellow");
+                GUI.Box(new Rect(450, 458, 100, 256), tmpTex, "box");
+
+                // Unblock selection for Orange.
+                if (GUI.Button(new Rect(100, 860, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "orange";
+                        Debug.Log("Primary Color should be orange now");
+                    }
+                    else if (isSelectingSecondary)
+                    {
+                        secondaryColor = "orange";
+                        Debug.Log("Secondary Color should be orange now");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 732, 700, 128), "ORANGE", "unblockablesHeader");
+
+                // Unblock selection for Red.
+                if (GUI.Button(new Rect(100, 1260, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "red";
+                        Debug.Log("Primary Color should be red now");
+                    }
+                    else if (isSelectingSecondary)
+                    {
+                        secondaryColor = "red";
+                        Debug.Log("Secondary Color should be red now");
+                    }
+                    else if (!isSelectingPrimary && !isSelectingSecondary)
+                    {
+                        Debug.Log("Abort missions both negative should be happening if no choice selected for main or secondary");
+                    }
+
+                    Save();
+                }
+                GUI.Label(new Rect(100, 1132, 700, 128), "RED", "unblockablesHeader");
+            }
+
+            // Selections for page 2.
+            else if (unblockablesPage == 2)
+            {
+                // Unblock selection for Green.
+                if (GUI.Button(new Rect(100, 458, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "green";
+                        Debug.Log("Primary Color should be green now.");
+                    }
+                    if (isSelectingSecondary)
+                    {
+                        secondaryColor = "green";
+                        Debug.Log("Secondary Color should be green now.");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 330, 700, 128), "GREEN", "unblockablesHeader");
+
+                // Unblock selection for Blue.
+                if (GUI.Button(new Rect(100, 860, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "blue";
+                        Debug.Log("Primary Color should be blue now");
+                    }
+                    else if (isSelectingSecondary)
+                    {
+                        secondaryColor = "blue";
+                        Debug.Log("Secondary Color should be blue now");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 732, 700, 128), "BLUE", "unblockablesHeader");
+
+                // Unblock selection for Purple.
+                if (GUI.Button(new Rect(100, 1260, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "purple";
+                        Debug.Log("Primary Color should be purple now");
+                    }
+                    else if (isSelectingSecondary)
+                    {
+                        secondaryColor = "purple";
+                        Debug.Log("Secondary Color should be purple now");
+                    }
+                    else if (!isSelectingPrimary && !isSelectingSecondary)
+                    {
+                        Debug.Log("Abort missions both negative should be happening if no choice selected for main or secondary");
+                    }
+
+                    Save();
+                }
+                GUI.Label(new Rect(100, 1132, 700, 128), "PURPLE", "unblockablesHeader");
+            }
+
+            // Unblock selections for page 3.
+            else if (unblockablesPage == 3)
+            {
+                // Unblock selection for White.
+                if (GUI.Button(new Rect(100, 458, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "white";
+                        Debug.Log("Primary Color should be white now.");
+                    }
+                    if (isSelectingSecondary)
+                    {
+                        secondaryColor = "white";
+                        Debug.Log("Secondary Color should be white now.");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 330, 700, 128), "WHITE", "unblockablesHeader");
+
+                // Unblock selection for Black.
+                if (GUI.Button(new Rect(100, 860, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "black";
+                        Debug.Log("Primary Color should be black now");
+                    }
+                    else if (isSelectingSecondary)
+                    {
+                        secondaryColor = "black";
+                        Debug.Log("Secondary Color should be black now");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 732, 700, 128), "BLACK", "unblockablesHeader");
+
+                }
+            }
+
+        // Gui for credits scene
         else if (Application.loadedLevelName == "credits")
         {
             Debug.Log("On GUI just called if Credits");
@@ -247,12 +408,14 @@ public class gameController : MonoBehaviour
                 LoadMenuScene();
             }
         }
+
+        // Gui for game over scene
         else if (Application.loadedLevelName == "gameOver")
         {
+            // This needs to go
             Debug.Log("On GUI just called if gameOver");
 
-
-            // Main Menu Buttons
+            // game over buttons
             if (GUI.Button(new Rect(225, 800, 450, 128), ""))
             {
                 LoadGameScene();
@@ -261,7 +424,7 @@ public class gameController : MonoBehaviour
             GUI.Label(new Rect(0, 800, 900, 128), "PLAY");
             if (GUI.Button(new Rect(150, 960, 600, 128), ""))
             {
-                LoadOptionsScene();
+                LoadUnblockablesScene();
             }
             GUI.Label(new Rect(0, 960, 900, 128), "UNBLOCKABLES");
             if (GUI.Button(new Rect(150, 1120, 600, 128), ""))
@@ -288,47 +451,57 @@ public class gameController : MonoBehaviour
 
     }
 
+    // Loads pantslessgrandpa scene.
     public void LoadPantlessGrandpaIntroScene()
     {
         Application.LoadLevel("pantlessGrandpaIntro");
     }
 
+    // Loads game scene.
     public void LoadGameScene()
     {
         Application.LoadLevel("game");
-
     }
 
+    // Loads menu scene.
     public void LoadMenuScene()
     {
         Application.LoadLevel("menu");
-
     }
 
+    // Loads options scene.
     public void LoadOptionsScene()
     {
         Application.LoadLevel("options");
-
     }
 
+    // Loads unblockables scene.
+    public void LoadUnblockablesScene()
+    {
+        Application.LoadLevel("unblockables");
+    }
+
+    // Loads game over scene
+    // Change this to game over
     public void LoadGameOverScene()
     {
         Application.LoadLevel("g");
-
     }
 
+    // Loads credits scene
     public void LoadCreditsScene()
     {
         Application.LoadLevel("credits");
-
     }
 
+    // Exits game or editor
     public void QuitGame()
     {
         Application.Quit();
         UnityEditor.EditorApplication.isPlaying = false;
     }
 
+    // Makes sure there is always a gameController.
     void GameControllerRules()
     {
         if (controller == null)
@@ -342,6 +515,7 @@ public class gameController : MonoBehaviour
         }
     }
 
+    // Handles all of my magic.
     void SceneController()
     {
         GameControllerRules();
@@ -357,7 +531,6 @@ public class gameController : MonoBehaviour
             Load();
             Invoke("LoadPantlessGrandpaIntroScene", 3.0f);
             Invoke("LoadMenuScene", 6.0f);
-            Invoke("LoadGameOverScene", 9.0f);
         }
         if (Application.loadedLevelName == "pantlessGrandpaIntro")
         {
@@ -373,7 +546,7 @@ public class gameController : MonoBehaviour
         }
         if (Application.loadedLevelName == "game")
         {
-            Invoke("LoadGameOver", 5.0f);
+
         }
         if (Application.loadedLevelName == "gameOver")
         {
@@ -384,42 +557,46 @@ public class gameController : MonoBehaviour
 
     void StartGame()
     {
-
-        //camera.backgroundColor = Color.gray;
+        // Handles spawning of block spawn locations based on screen size.
         var block2DCollider = blockPrimary.GetComponent<Collider2D>();
-
         topSpawnLocation = new Vector3(Screen.width + Screen.width, Screen.height - Screen.height / 32, 11);
         topSpawnLocation = camera.ScreenToWorldPoint(topSpawnLocation);
         bottomSpawnLocation = new Vector3(-Screen.width, Screen.height / 32, 11);
         bottomSpawnLocation = camera.ScreenToWorldPoint(bottomSpawnLocation);
         bottomSpawnLocation.x += block2DCollider.bounds.size.x * 2;
         bottomSpawnLocation.y -= block2DCollider.bounds.size.y * 2;
-        ballSpawnLocation = new Vector3(450, 800, 11);
+        ballSpawnLocation = new Vector3(Screen.width/2, Screen.height/2, 11);
         // Set Block one and two from saved files
         Debug.Log(primaryColor);
         blockPrimary.GetComponent<SpriteRenderer>().sprite = sprites[1][primaryColor];
         blockSecondary.GetComponent<SpriteRenderer>().sprite = sprites[1][secondaryColor];
-        ballPrimary.GetComponent<SpriteRenderer>().sprite = sprites[0][primaryColor];
-        ballSecondary.GetComponent<SpriteRenderer>().sprite = sprites[0][secondaryColor];
+
 
         // Load block 1 and block 2 from saved file
         // if game scene
-        InvokeRepeating("SpawnBlocks", 1f, 0.3f);
+        SpawnBall();
+        InvokeRepeating("SpawnBlocks", 0.1f, 0.5f);
         InvokeRepeating("SwapPrimaryAndSecondary", 10.0f, 10.0f);
         InvokeRepeating("SpawnFlashingLights", 7.5f, 10.0f);
-        SpawnBall();
     }
 
+    // Instantiate Kanye reference if need be.
     void SpawnFlashingLights()
     {
         Instantiate(flashingLights,new Vector3(0,0,11), Quaternion.identity);
     }
 
+    // Not yet working... Might be female.
     void SpawnBall()
     {
-        Instantiate(ballPrimary, ballSpawnLocation, Quaternion.identity);
+        //ballPrimary.GetComponent<SpriteRenderer>().sprite = sprites[0][primaryColor];
+        //ballSecondary.GetComponent<SpriteRenderer>().sprite = sprites[0][secondaryColor];
+        Debug.Log("Spawnball has been called successfully");
+        Instantiate(ballPrimary, ballSpawnLocation, Quaternion.identity); 
+        balls.Add((GameObject)Instantiate(ballPrimary, ballSpawnLocation, Quaternion.identity));
     }
 
+    // Handles spawning and making primary, secondary, or exclusive blocks.
     void SpawnBlocks()
     {
         int topRandom = UnityEngine.Random.Range(0, 10);
@@ -443,11 +620,12 @@ public class gameController : MonoBehaviour
             bottomSpawn = blockPrimary;
         }
         blockLanes[0].Add((GameObject)Instantiate(topSpawn, topSpawnLocation, Quaternion.identity));
-        blockLanes[0][blockLanes[0].Count - 1].GetComponent<Rigidbody2D>().AddForce(new Vector2(-3 * Time.deltaTime, 0));
+        blockLanes[0][blockLanes[0].Count - 1].GetComponent<Rigidbody2D>().AddForce(new Vector2(-2 * Time.deltaTime, 0));
         blockLanes[1].Add((GameObject)Instantiate(bottomSpawn, bottomSpawnLocation, Quaternion.identity));
-        blockLanes[1][blockLanes[1].Count - 1].GetComponent<Rigidbody2D>().AddForce(new Vector2(3 * Time.deltaTime, 0));
+        blockLanes[1][blockLanes[1].Count - 1].GetComponent<Rigidbody2D>().AddForce(new Vector2(2 * Time.deltaTime, 0));
     }
 
+    // Name speaks for itself.
     public void SwapPrimaryAndSecondary()
     {
         var temp = blockPrimary.GetComponent<SpriteRenderer>().sprite;
@@ -458,6 +636,7 @@ public class gameController : MonoBehaviour
         ballSecondary.GetComponent<SpriteRenderer>().sprite = temp;
     }
 
+    // Creates rules based on the platform of the game.
     void EstablishControls()
     {
         if (hasNeverBeenRun)
@@ -478,6 +657,7 @@ public class gameController : MonoBehaviour
         }
     }
 
+    // Guess what this does.
     private static void LoadAllSprites()
     {
         for (int i = 0; i < spriteGroups.Count; ++i)
@@ -493,7 +673,7 @@ public class gameController : MonoBehaviour
         }
     }
 
-
+    // How about this one?
     private static void LoadAllGuiSkins()
     {
         if (guiSkins.Count == 0)
@@ -507,6 +687,7 @@ public class gameController : MonoBehaviour
 
     }
 
+    // The almighty save function
     void Save()
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -519,6 +700,7 @@ public class gameController : MonoBehaviour
         Debug.Log("Saved File to " + Application.persistentDataPath + "/gameData.dat");
     }
 
+    // The messed up load function (only upon new loading)
     void Load()
     {
         if (File.Exists(Application.persistentDataPath + "/gameData.dat"))
