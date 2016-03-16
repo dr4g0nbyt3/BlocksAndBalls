@@ -55,6 +55,8 @@ public class gameController : MonoBehaviour
     public string secondaryColor = "black";
     public string skin = "customLight";
 
+    // Enter stat variables
+
     // Private Variables
     private Vector3 topSpawnLocation;
     private Vector3 bottomSpawnLocation;
@@ -84,7 +86,15 @@ public class gameController : MonoBehaviour
         Load();
         SceneController();
         ballsLeft = 3;
-        unblockablesPage = 1; 
+        unblockablesPage = 1;
+        if(Application.loadedLevelName == "game")
+        {
+            StartGame();
+
+            Invoke("LoadGameOverScene", 5.0f);
+            Invoke("DestroyGameController", 5.0f);
+        }
+
     }
 
     void FixedUpdate()
@@ -134,8 +144,8 @@ public class gameController : MonoBehaviour
         // Gui for game scene.
         else if (Application.loadedLevelName == "game")
         {
-            GUI.Label(new Rect(0, 800, 450, 128), ballsLeft.ToString());
-            GUI.Label(new Rect(450, 800, 450, 128), score.ToString());
+            GUI.Label(new Rect(0, 742, 450, 128), ballsLeft.ToString());
+            GUI.Label(new Rect(450, 742, 450, 128), score.ToString());
             
         }
 
@@ -160,13 +170,14 @@ public class gameController : MonoBehaviour
             if (GUI.Button(new Rect(225, 800, 450, 128), ""))
             {
                 LoadGameScene();
-                StartGame();
+                Save();
+                Destroy(gameObject);
             }
             GUI.Label(new Rect(0, 800, 900, 128), "PLAY");
             if (GUI.Button(new Rect(150, 960, 600, 128), ""))
             {
-                LoadOptionsScene();
                 LoadUnblockablesScene();
+                isSelectingPrimary = true;
             }
             if (hasNewUnlocks)
             {
@@ -203,21 +214,37 @@ public class gameController : MonoBehaviour
             {
                 isSelectingPrimary = false;
                 isSelectingSecondary = false;
+                unblockablesPage = 1;
                 Save();
                 LoadMenuScene();
             }
-            if (GUI.Button(new Rect(0, 192, 450, 128), "", "unblockableSection0"))
+            if (GUI.Button(new Rect(100, 192, 250, 128), "", "unblockableSection0"))
             {
                 isSelectingPrimary = true;
                 isSelectingSecondary = false;
             }
-            GUI.Label(new Rect(0, 192, 450, 128), "MAIN", "unblockableSection0");
-            if (GUI.Button(new Rect(450, 192, 450, 128), "", "unblockableSection0"))
+            
+            if (isSelectingPrimary)
+            {
+                GUI.Label(new Rect(100, 192, 250, 142), "MAIN", "unblockableSection2");
+            }
+            else
+            {
+                GUI.Label(new Rect(100, 192, 250, 142), "MAIN", "unblockableSection0");
+            }
+            if (GUI.Button(new Rect(550, 192, 250, 128), "", "unblockableSection0"))
             {
                 isSelectingSecondary = true;
                 isSelectingPrimary = false;
             }
-            GUI.Label(new Rect(450, 192, 450, 128), "BOOM", "unblockableSection0");
+            if (isSelectingSecondary)
+            {
+                GUI.Label(new Rect(550, 192, 250, 142), "BOOM", "unblockableSection2");
+            }
+            else
+            {
+                GUI.Label(new Rect(550, 192, 250, 142), "BOOM", "unblockableSection0");
+            }
 
             GUI.Label(new Rect(0, 200, 900, 128), unblockablesPage.ToString(), "label");
 
@@ -234,6 +261,26 @@ public class gameController : MonoBehaviour
             if (unblockablesPage == 0)
             {
                 // Place hackers theme here.
+                // Unblock selection for Yellow.
+                if (GUI.Button(new Rect(100, 458, 700, 256), "", "unblockableSection0"))
+                {
+                    if (isSelectingPrimary)
+                    {
+                        primaryColor = "l33ts0up";
+                        Debug.Log("Primary Color should be l33t now.");
+                    }
+                    if (isSelectingSecondary)
+                    {
+                        secondaryColor = "l33ts0up";
+                        Debug.Log("Secondary Color should be l33t now.");
+                    }
+                    Save();
+                }
+                GUI.Label(new Rect(100, 330, 700, 128), "l33t s0up", "unblockablesHeader");
+                Texture tmpTex = (Texture2D)Resources.Load("sprites/blocks/green");
+                GUI.Box(new Rect(450, 512, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/green");
+                GUI.Box(new Rect(422, 372, 312, 312), tmpTex, "box");
             }
 
             // Selections for page 1.
@@ -257,7 +304,9 @@ public class gameController : MonoBehaviour
                 }
                 GUI.Label(new Rect(100, 330, 700, 128), "YELLOW", "unblockablesHeader");
                 Texture tmpTex = (Texture2D)Resources.Load("sprites/blocks/yellow");
-                GUI.Box(new Rect(450, 458, 100, 256), tmpTex, "box");
+                GUI.Box(new Rect(450, 512, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/yellow");
+                GUI.Box(new Rect(422, 372, 312, 312), tmpTex, "box");
 
                 // Unblock selection for Orange.
                 if (GUI.Button(new Rect(100, 860, 700, 256), "", "unblockableSection0"))
@@ -275,6 +324,10 @@ public class gameController : MonoBehaviour
                     Save();
                 }
                 GUI.Label(new Rect(100, 732, 700, 128), "ORANGE", "unblockablesHeader");
+                tmpTex = (Texture2D)Resources.Load("sprites/blocks/orange");
+                GUI.Box(new Rect(450, 928, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/orange");
+                GUI.Box(new Rect(422, 788, 312, 312), tmpTex, "box");
 
                 // Unblock selection for Red.
                 if (GUI.Button(new Rect(100, 1260, 700, 256), "", "unblockableSection0"))
@@ -297,6 +350,10 @@ public class gameController : MonoBehaviour
                     Save();
                 }
                 GUI.Label(new Rect(100, 1132, 700, 128), "RED", "unblockablesHeader");
+                tmpTex = (Texture2D)Resources.Load("sprites/blocks/red");
+                GUI.Box(new Rect(450, 1328, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/red");
+                GUI.Box(new Rect(422, 1188, 312, 312), tmpTex, "box");
             }
 
             // Selections for page 2.
@@ -318,6 +375,10 @@ public class gameController : MonoBehaviour
                     Save();
                 }
                 GUI.Label(new Rect(100, 330, 700, 128), "GREEN", "unblockablesHeader");
+                Texture tmpTex = (Texture2D)Resources.Load("sprites/blocks/green");
+                GUI.Box(new Rect(450, 512, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/green");
+                GUI.Box(new Rect(422, 372, 312, 312), tmpTex, "box");
 
                 // Unblock selection for Blue.
                 if (GUI.Button(new Rect(100, 860, 700, 256), "", "unblockableSection0"))
@@ -335,6 +396,10 @@ public class gameController : MonoBehaviour
                     Save();
                 }
                 GUI.Label(new Rect(100, 732, 700, 128), "BLUE", "unblockablesHeader");
+                tmpTex = (Texture2D)Resources.Load("sprites/blocks/blue");
+                GUI.Box(new Rect(450, 928, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/blue");
+                GUI.Box(new Rect(422, 788, 312, 312), tmpTex, "box");
 
                 // Unblock selection for Purple.
                 if (GUI.Button(new Rect(100, 1260, 700, 256), "", "unblockableSection0"))
@@ -357,6 +422,10 @@ public class gameController : MonoBehaviour
                     Save();
                 }
                 GUI.Label(new Rect(100, 1132, 700, 128), "PURPLE", "unblockablesHeader");
+                tmpTex = (Texture2D)Resources.Load("sprites/blocks/purple");
+                GUI.Box(new Rect(450, 1328, 256, 256), tmpTex, "box");
+                tmpTex = (Texture2D)Resources.Load("sprites/balls/purple");
+                GUI.Box(new Rect(422, 1188, 312, 312), tmpTex, "box");
             }
 
             // Unblock selections for page 3.
@@ -498,7 +567,12 @@ public class gameController : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false;
+        // UnityEditor.EditorApplication.isPlaying = false;
+    }
+
+    public void DestroyGameController()
+    {
+        Destroy(gameObject);
     }
 
     // Makes sure there is always a gameController.
@@ -522,11 +596,12 @@ public class gameController : MonoBehaviour
         camera = GetComponent<Camera>();
         LoadAllSprites();
         LoadAllGuiSkins();
+        camera.backgroundColor = new Color32(32, 32, 32, 32);
         if (Application.loadedLevelName == "dr4g0nbyt3Intro")
         {
             EstablishControls();
 
-            camera.backgroundColor = new Color32(32, 32, 32, 32);
+            
 
             Load();
             Invoke("LoadPantlessGrandpaIntroScene", 3.0f);
@@ -546,7 +621,7 @@ public class gameController : MonoBehaviour
         }
         if (Application.loadedLevelName == "game")
         {
-
+            camera.backgroundColor = new Color32(32, 32, 32, 32);
         }
         if (Application.loadedLevelName == "gameOver")
         {
@@ -565,7 +640,7 @@ public class gameController : MonoBehaviour
         bottomSpawnLocation = camera.ScreenToWorldPoint(bottomSpawnLocation);
         bottomSpawnLocation.x += block2DCollider.bounds.size.x * 2;
         bottomSpawnLocation.y -= block2DCollider.bounds.size.y * 2;
-        ballSpawnLocation = new Vector3(Screen.width/2, Screen.height/2, 11);
+        ballSpawnLocation = new Vector3(0,0, 11);
         // Set Block one and two from saved files
         Debug.Log(primaryColor);
         blockPrimary.GetComponent<SpriteRenderer>().sprite = sprites[1][primaryColor];
@@ -574,7 +649,7 @@ public class gameController : MonoBehaviour
 
         // Load block 1 and block 2 from saved file
         // if game scene
-        SpawnBall();
+        Invoke("SpawnBall", 2.0f);
         InvokeRepeating("SpawnBlocks", 0.1f, 0.5f);
         InvokeRepeating("SwapPrimaryAndSecondary", 10.0f, 10.0f);
         InvokeRepeating("SpawnFlashingLights", 7.5f, 10.0f);
@@ -589,8 +664,8 @@ public class gameController : MonoBehaviour
     // Not yet working... Might be female.
     void SpawnBall()
     {
-        //ballPrimary.GetComponent<SpriteRenderer>().sprite = sprites[0][primaryColor];
-        //ballSecondary.GetComponent<SpriteRenderer>().sprite = sprites[0][secondaryColor];
+        ballPrimary.GetComponent<SpriteRenderer>().sprite = sprites[0][primaryColor];
+        ballSecondary.GetComponent<SpriteRenderer>().sprite = sprites[0][secondaryColor];
         Debug.Log("Spawnball has been called successfully");
         Instantiate(ballPrimary, ballSpawnLocation, Quaternion.identity); 
         balls.Add((GameObject)Instantiate(ballPrimary, ballSpawnLocation, Quaternion.identity));
